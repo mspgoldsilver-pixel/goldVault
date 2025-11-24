@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    --background: 0 0% 5%;
+    --foreground: 0 0% 98%;
+
+    --card: 0 0% 8%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 43 82% 52%;
+    --primary-foreground: 0 0% 5%;
+
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 60%;
+
+    --accent: 43 82% 52%;
+    --accent-foreground: 0 0% 5%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 43 82% 52%;
+    --input: 0 0% 15%;
+    --ring: 43 82% 52%;
+
+    --radius: 0.75rem;
+
+    --gold: 43 82% 52%;
+    --gold-light: 43 82% 62%;
+    --gold-dark: 43 82% 42%;
+
+    --gradient-gold: linear-gradient(135deg, hsl(43 82% 42%), hsl(43 82% 52%), hsl(43 82% 62%));
+    --shadow-gold: 0 0 40px hsl(43 82% 52% / 0.3);
+    --shadow-gold-sm: 0 0 20px hsl(43 82% 52% / 0.2);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
+  }
+}
+
+@layer utilities {
+  .gold-glow {
+    box-shadow: var(--shadow-gold);
+  }
+
+  .gold-glow-sm {
+    box-shadow: var(--shadow-gold-sm);
+  }
+
+  .gold-text-glow {
+    text-shadow: 0 0 20px hsl(43 82% 52% / 0.5);
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes glow {
+    from {
+      box-shadow: 0 0 20px hsl(43 82% 52% / 0.2);
+    }
+    to {
+      box-shadow: 0 0 40px hsl(43 82% 52% / 0.5);
+    }
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
