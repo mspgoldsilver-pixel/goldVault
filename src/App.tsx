@@ -18,10 +18,10 @@ import { KYCRequests } from "./admin/pages/Kyc";
 import { Vault } from "./admin/pages/Vault";
 import { Orders } from "./admin/pages/Orders";
 import { Deliveries } from "./admin/pages/Deliveries";
-import { LiveRates } from "./admin/pages/live-rates";
-import { Payments } from "./admin/pages/payments";
-import { Notifications } from "./admin/pages/notifications";
+import { Notifications } from "./admin/pages/Notifications";
 import { Settings } from "./admin/pages/Settings";
+import { Payments } from "./admin/pages/Pay";
+import { LiveRates } from "./admin/pages/LiveRates";
 
 const queryClient = new QueryClient();
 
@@ -48,7 +48,7 @@ const App = () => (
           <Route path="/admin/vault" element={<Vault />} />
           <Route path="/admin/orders" element={<Orders />} />
           <Route path="/admin/deliveries" element={<Deliveries/>} />
-          <Route path="/admin/live-rates" element={<LiveRates/>} />
+          <Route path="/admin/liveRates" element={<LiveRates/>} />
           <Route path="/admin/notifications" element={<Notifications/>} />
           <Route path="/admin/settings" element={<Settings/>} />
           <Route path="/admin/payments" element={<Payments/>} />

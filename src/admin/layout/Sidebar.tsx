@@ -31,7 +31,7 @@ const menuItems: MenuItem[] = [
   { label: "Deliveries", icon: Truck, path: "/admin/deliveries" },
 
   { divider: true, label: "Operations" },
-  { label: "Live Rates", icon: Activity, path: "/admin/live-rates" },
+  { label: "Live Rates", icon: Activity, path: "/admin/LiveRates" },
   { label: "Payments", icon: CreditCard, path: "/admin/payments" },
   { label: "Notifications", icon: Bell, path: "/admin/notifications" },
 
