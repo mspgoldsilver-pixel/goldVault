@@ -1,14 +1,29 @@
-// LoginPage.tsx
+// src/pages/LoginPage.tsx
 // Updated: fixes the left mask/gap issue by ensuring overlays start flush at the image's left edge.
 // Single-file React + TypeScript + Tailwind component (dark theme for Gold Vault Admin).
 // Paste into src/pages/LoginPage.tsx (or your components/pages folder).
 
 import React, { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import { useNavigate } from "react-router-dom";
+import api from "../services/api";
 
 type FormState = {
   email: string;
   password: string;
   remember: boolean;
+};
+
+type LoginPayload = {
+  email: string;
+  password: string;
+};
+
+type LoginResponse = {
+  token: string;
+  email?: string;
+  role?: string;
 };
 
 const sideImageSrc =
@@ -20,6 +35,8 @@ const NEAR_BLACK = "#050505";
 const NEAR_WHITE = "#f8f6f5";
 
 const LoginPage: React.FC = () => {
+  const navigate = useNavigate();
+
   const [form, setForm] = useState<FormState>({
     email: "",
     password: "",
@@ -27,7 +44,6 @@ const LoginPage: React.FC = () => {
   });
 
   const [error, setError] = useState<{ email?: string; password?: string }>({});
-  const [loading, setLoading] = useState<boolean>(false);
 
   function validate(): boolean {
     const e: { email?: string; password?: string } = {};
@@ -46,20 +62,43 @@ const LoginPage: React.FC = () => {
     (ev: React.ChangeEvent<HTMLInputElement>) =>
       setForm((s) => ({ ...s, [key]: key === "remember" ? ev.target.checked : ev.target.value }));
 
+  // React Query v5 mutation (typed)
+ const loginMutation = useMutation<LoginResponse, AxiosError, LoginPayload>({
+  mutationFn: async (payload: LoginPayload) => {
+    const res = await api.post("/api/v1/auth/login", payload);
+    console.log("LOGIN RESPONSE:", res.data);
+
+    // FIX: actual token path
+    return res.data.data;
+  },
+
+  onSuccess: (data) => {
+    console.log("TOKEN FROM BACKEND:", data.token);
+
+    if (form.remember) {
+      localStorage.setItem("admin_token", data.token);
+    } else {
+      sessionStorage.setItem("admin_token", data.token);
+    }
+
+    navigate("/admin/dashboard");
+  },
+
+  onError: (err) => {
+    console.log("LOGIN ERROR:", err);
+    setError({ password: "Login failed. Check credentials." });
+  },
+});
+
+
   const handleSubmit = async (ev: React.FormEvent) => {
     ev.preventDefault();
     if (!validate()) return;
-    setLoading(true);
-    try {
-      // replace with your login API call
-      console.log("submit", form);
-      await new Promise((r) => setTimeout(r, 700));
-      // on success: navigate or show success
-    } catch {
-      setError({ password: "Login failed. Check credentials." });
-    } finally {
-      setLoading(false);
-    }
+
+    loginMutation.mutate({
+      email: form.email.trim(),
+      password: form.password,
+    });
   };
 
   return (
@@ -165,16 +204,16 @@ const LoginPage: React.FC = () => {
               <div>
                 <button
                   type="submit"
-                  disabled={loading}
+                  disabled={loginMutation.isPending}
                   className="w-full py-3 rounded-md font-medium text-black shadow-sm"
                   style={{
                     background: `linear-gradient(90deg, ${GOLD_HSL} 0%, rgba(241,183,30,0.9) 60%)`,
                     boxShadow: `0 12px 40px rgba(241,183,30,0.20), 0 2px 6px rgba(0,0,0,0.45)`,
-                    opacity: loading ? 0.8 : 1,
+                    opacity: loginMutation.isPending ? 0.8 : 1,
                     border: `1px solid rgba(255,255,255,0.03)`,
                   }}
                 >
-                  {loading ? "Signing in..." : "Sign In"}
+                  {loginMutation.isPending ? "Signing in..." : "Sign In"}
                 </button>
               </div>
             </div>
@@ -197,7 +236,7 @@ const LoginPage: React.FC = () => {
             alt="Side visual"
             className="absolute inset-0 w-full h-full object-cover"
             style={{
-              objectPosition: "center right", // keeps the subject visible while covering edges
+              objectPosition: "center right",
             }}
           />
 
@@ -216,8 +255,8 @@ const LoginPage: React.FC = () => {
           <div
             className="absolute top-0 bottom-0"
             style={{
-              left: "-2px", // extend slightly left to remove any gap
-              width: "calc(6% + 2px)", // account for the -2px left shift
+              left: "-2px",
+              width: "calc(6% + 2px)",
               background: "rgba(255,255,255,0.88)",
               mixBlendMode: "overlay",
               zIndex: 20,

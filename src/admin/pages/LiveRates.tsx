@@ -1,120 +1,101 @@
+import { useEffect, useState } from "react";
 import { AdminLayout } from "../layout/AdminLayout";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
+import { useWebSocket } from "../../hooks/useWebSocket";
 
 type RateCardProps = {
   label: string;
   value: string;
-  change: string;
-  positive: boolean;
 };
 
-const RateCard = ({ label, value, change, positive }: RateCardProps) => {
+const RateCard = ({ label, value }: RateCardProps) => {
   return (
     <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-6">
       <p className="text-neutral-400 text-sm">{label}</p>
       <p className="text-4xl font-bold text-white mt-1">{value}</p>
-      <p
-        className={`text-sm mt-2 ${
-          positive ? "text-green-400" : "text-red-500"
-        }`}
-      >
-        {change}
-      </p>
     </div>
   );
 };
 
+function formatINR(value: number | null, unit = ""): string {
+  if (value === null) return "—";
+  return `₹${value.toLocaleString("en-IN")}${unit}`;
+}
+
 export const LiveRates = () => {
+  const { connected, message } = useWebSocket("ws://localhost:5000");
+
+  const [goldPer10Gram, setGoldPer10Gram] = useState<number | null>(null);
+
+  const [silverPerGram, setSilverPerGram] = useState<number | null>(null);
+  const [silverPerKg, setSilverPerKg] = useState<number | null>(null);
+
+  const [lastUpdated, setLastUpdated] = useState<string>("—");
+
+  useEffect(() => {
+    if (!message) return;
+
+    if (message.type === "snapshot" || message.type === "update") {
+      const data = message.data;
+
+      // GOLD — backend now gives only 10g
+      setGoldPer10Gram(
+        typeof data.gold24kPer10g === "number" ? data.gold24kPer10g : null
+      );
+
+      // SILVER
+      setSilverPerGram(
+        typeof data.silverPerGram === "number" ? data.silverPerGram : null
+      );
+
+      setSilverPerKg(
+        typeof data.silverPerKg === "number" ? data.silverPerKg : null
+      );
+
+      // Timestamp
+      const tsFormatted =
+        typeof data.timestamp === "string"
+          ? new Date(data.timestamp).toLocaleString()
+          : new Date().toLocaleString();
+
+      setLastUpdated(tsFormatted);
+    }
+  }, [message]);
+
   return (
     <AdminLayout>
-      {/* Page Title */}
-      <h1 className="text-4xl font-bold mb-3">Live Gold Rates</h1>
-      <p className="text-neutral-400 mb-8">
-        Monitor and control gold buying/selling rates in real-time
-      </p>
+      <h1 className="text-4xl font-bold mb-3">Live Gold & Silver Rates</h1>
+      <p className="text-neutral-400 mb-8">Real-time bullion price tracking</p>
 
-      {/* Live Ticker */}
-      <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 mb-8">
-        <p className="text-[#E9B020] font-semibold text-lg animate-pulse">
-          Live Ticker: ₹6,845 /g • Updated 2 sec ago
+      {/* STATUS */}
+      <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 mb-8 flex items-center justify-between">
+        <p className="text-[#E9B020] font-semibold text-lg">
+          Last Update: {lastUpdated}
+        </p>
+        <p className="text-sm text-neutral-400">
+          {connected ? "Connected" : "Disconnected"}
         </p>
       </div>
 
-      {/* Rate Cards */}
+      {/* GOLD */}
+      <h2 className="text-2xl font-semibold text-white mb-4">Gold Rates</h2>
       <div className="grid grid-cols-3 gap-6 mb-10">
         <RateCard
-          label="Current Buy Price"
-          value="₹6,845/g"
-          change="+0.45%"
-          positive={true}
+          label="Gold Price (per 10 gram)"
+          value={formatINR(goldPer10Gram, "/10g")}
+        />
+      </div>
+
+      {/* SILVER */}
+      <h2 className="text-2xl font-semibold text-white mb-4">Silver Rates</h2>
+      <div className="grid grid-cols-3 gap-6 mb-10">
+        <RateCard
+          label="Silver Price (per gram)"
+          value={formatINR(silverPerGram, "/g")}
         />
         <RateCard
-          label="Current Sell Price"
-          value="₹6,725/g"
-          change="-0.12%"
-          positive={false}
+          label="Silver Price (per kg)"
+          value={formatINR(silverPerKg, "/kg")}
         />
-        <RateCard
-          label="24h High"
-          value="₹6,920/g"
-          change="+1.10%"
-          positive={true}
-        />
-      </div>
-
-      {/* Trend Chart Placeholder */}
-      <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-6 mb-10 h-64 flex items-center justify-center">
-        <p className="text-neutral-500">Chart Placeholder (Add later)</p>
-      </div>
-
-      {/* Auto/Manual Control */}
-      <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-6 mb-10">
-        <h2 className="text-xl font-semibold mb-4">Rate Control</h2>
-
-        <div className="flex items-center justify-between mb-6">
-          <p className="text-neutral-300 text-sm">
-            Auto Update Prices from API
-          </p>
-          <Switch />
-        </div>
-
-        <div className="grid grid-cols-2 gap-6">
-          <div>
-            <p className="text-neutral-400 text-sm mb-1">Manual Buy Price</p>
-            <Input
-              placeholder="Enter buy price"
-              className="bg-neutral-800 border-neutral-700 text-white"
-            />
-          </div>
-
-          <div>
-            <p className="text-neutral-400 text-sm mb-1">Manual Sell Price</p>
-            <Input
-              placeholder="Enter sell price"
-              className="bg-neutral-800 border-neutral-700 text-white"
-            />
-          </div>
-        </div>
-
-        <Button className="mt-6 bg-[#E9B020] text-black hover:bg-[#c79a1b]">
-          Update Prices
-        </Button>
-      </div>
-
-      {/* Buy/Sell Spread */}
-      <div className="grid grid-cols-2 gap-6 mb-10">
-        <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-6">
-          <h3 className="text-xl font-semibold mb-3">Buy/Sell Spread</h3>
-          <p className="text-neutral-400 mb-2">Spread Difference</p>
-          <p className="text-3xl font-bold text-white">₹120</p>
-        </div>
-
-        <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-6">
-          <h3 className="text-xl font-semibold mb-3">Last Updated</h3>
-          <p className="text-neutral-400">2 seconds ago</p>
-        </div>
       </div>
     </AdminLayout>
   );
