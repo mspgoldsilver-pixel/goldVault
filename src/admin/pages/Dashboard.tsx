@@ -5,12 +5,14 @@ import { AdminLayout } from "../layout/AdminLayout";
 export const Dashboard = () => {
   return (
     <AdminLayout>
-      <h1 className="text-4xl font-bold mb-6">Dashboard</h1>
-      <p className="text-neutral-400 mb-8">
+      <h1 className="text-3xl md:text-4xl font-bold mb-4 md:mb-6">Dashboard</h1>
+
+      <p className="text-neutral-400 mb-6 md:mb-8">
         Welcome back, Admin. Here's what's happening today.
       </p>
 
-      <div className="grid grid-cols-4 gap-5 mb-10">
+      {/* METRIC CARDS */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 mb-10">
         <MetricCard
           title="Total Users"
           value="12,459"
@@ -37,11 +39,12 @@ export const Dashboard = () => {
         />
       </div>
 
-      {/* Recent Orders + Pending Actions */}
-      <div className="grid grid-cols-2 gap-6">
+      {/* RECENT ORDERS + PENDING ACTIONS */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Recent Orders */}
         <Card className="bg-neutral-900 border-neutral-800">
           <CardHeader>
-            <CardTitle className="text-xl">Recent Orders</CardTitle>
+            <CardTitle className="text-lg md:text-xl">Recent Orders</CardTitle>
           </CardHeader>
           <CardContent className="space-y-5">
             <OrderRow
@@ -71,32 +74,23 @@ export const Dashboard = () => {
           </CardContent>
         </Card>
 
+        {/* Pending Actions */}
         <Card className="bg-neutral-900 border-neutral-800">
           <CardHeader>
-            <CardTitle className="text-xl">Pending Actions</CardTitle>
+            <CardTitle className="text-lg md:text-xl">Pending Actions</CardTitle>
           </CardHeader>
           <CardContent className="space-y-5">
-            <ActionRow
-              title="KYC Review"
-              user="Alice Brown"
-              priority="high"
-            />
-            <ActionRow
-              title="Delivery Approval"
-              user="Bob Davis"
-              priority="medium"
-            />
-            <ActionRow
-              title="Refund Request"
-              user="Carol White"
-              priority="high"
-            />
+            <ActionRow title="KYC Review" user="Alice Brown" priority="high" />
+            <ActionRow title="Delivery Approval" user="Bob Davis" priority="medium" />
+            <ActionRow title="Refund Request" user="Carol White" priority="high" />
           </CardContent>
         </Card>
       </div>
     </AdminLayout>
   );
 };
+
+/* ----------------------- Metric Card ------------------------- */
 
 type MetricCardProps = {
   title: string;
@@ -114,13 +108,16 @@ const MetricCard = ({ title, value, icon, change }: MetricCardProps) => {
           {icon}
         </div>
       </CardHeader>
+
       <CardContent>
-        <p className="text-3xl font-bold">{value}</p>
-        <p className="text-green-500 text-sm">{change} vs last month</p>
+        <p className="text-2xl md:text-3xl font-bold">{value}</p>
+        <p className="text-green-500 text-xs md:text-sm">{change} vs last month</p>
       </CardContent>
     </Card>
   );
 };
+
+/* ----------------------- Order Row ------------------------- */
 
 type OrderRowProps = {
   name: string;
@@ -131,23 +128,25 @@ type OrderRowProps = {
   status: string;
 };
 
-const OrderRow = ({ name, type, weight, time, amount, status }: OrderRowProps) => {
+const OrderRow = ({ name, weight, time, amount, status }: OrderRowProps) => {
   return (
     <div className="flex items-center justify-between">
       <div>
-        <p className="font-semibold">{name}</p>
+        <p className="font-semibold text-sm md:text-base">{name}</p>
         <p className="text-xs text-neutral-500">
           {weight} • {time}
         </p>
       </div>
 
       <div className="text-right">
-        <p className="font-semibold">{amount}</p>
+        <p className="font-semibold text-sm md:text-base">{amount}</p>
         <span className="text-xs text-neutral-400">{status}</span>
       </div>
     </div>
   );
 };
+
+/* ----------------------- Action Row ------------------------- */
 
 type ActionRowProps = {
   title: string;
@@ -161,10 +160,10 @@ const ActionRow = ({ title, user, priority }: ActionRowProps) => {
   return (
     <div className="flex items-center justify-between">
       <div>
-        <p className="font-semibold">{title}</p>
+        <p className="font-semibold text-sm md:text-base">{title}</p>
         <p className="text-xs text-neutral-500">{user}</p>
       </div>
-      <span className={`${color} text-xs px-3 py-1 rounded-full`}>
+      <span className={`${color} text-xs px-3 py-1 rounded-full capitalize`}>
         {priority}
       </span>
     </div>

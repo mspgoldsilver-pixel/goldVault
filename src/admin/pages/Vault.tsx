@@ -21,149 +21,124 @@ type VaultRecord = {
 };
 
 const vaultData: VaultRecord[] = [
-  {
-    id: "VL-1001",
-    user: "John Smith",
-    gold: "50g",
-    type: "deposit",
-    date: "15/01/2024",
-    status: "completed",
-  },
-  {
-    id: "VL-1002",
-    user: "Sarah Johnson",
-    gold: "30g",
-    type: "withdraw",
-    date: "20/01/2024",
-    status: "pending",
-  },
-  {
-    id: "VL-1003",
-    user: "Mike Wilson",
-    gold: "100g",
-    type: "deposit",
-    date: "02/02/2024",
-    status: "completed",
-  },
-  {
-    id: "VL-1004",
-    user: "Alice Brown",
-    gold: "0g",
-    type: "withdraw",
-    date: "07/02/2024",
-    status: "completed",
-  },
+  { id: "VL-1001", user: "John Smith", gold: "50g", type: "deposit", date: "15/01/2024", status: "completed" },
+  { id: "VL-1002", user: "Sarah Johnson", gold: "30g", type: "withdraw", date: "20/01/2024", status: "pending" },
+  { id: "VL-1003", user: "Mike Wilson", gold: "100g", type: "deposit", date: "02/02/2024", status: "completed" },
+  { id: "VL-1004", user: "Alice Brown", gold: "0g", type: "withdraw", date: "07/02/2024", status: "completed" },
 ];
 
 export const Vault = () => {
   return (
     <AdminLayout>
-      <h1 className="text-4xl font-bold mb-3">Vault Management</h1>
-      <p className="text-neutral-400 mb-8">
+      <h1 className="text-3xl md:text-4xl font-bold mb-2">Vault Management</h1>
+
+      <p className="text-neutral-400 mb-6 md:mb-8">
         Track vault deposits, withdrawals, and gold balances
       </p>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-3 gap-6 mb-10">
-        <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-6">
-          <p className="text-neutral-400 text-sm mb-1">Total Gold</p>
-          <p className="text-3xl font-bold text-white">2,345g</p>
-        </div>
-
-        <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-6">
-          <p className="text-neutral-400 text-sm mb-1">Locked Gold</p>
-          <p className="text-3xl font-bold text-white">850g</p>
-        </div>
-
-        <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-6">
-          <p className="text-neutral-400 text-sm mb-1">Available Gold</p>
-          <p className="text-3xl font-bold text-white">1,495g</p>
-        </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-10">
+        <SummaryCard title="Total Gold" value="2,345g" />
+        <SummaryCard title="Locked Gold" value="850g" />
+        <SummaryCard title="Available Gold" value="1,495g" />
       </div>
 
-      {/* Export Button */}
-      <div className="flex justify-end gap-3 mb-6">
+      {/* Export & Search Section */}
+      <div className="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-6">
+        {/* Search Input */}
+        <Input
+          placeholder="Search by user, type, or date..."
+          className="bg-neutral-900 border-neutral-800 text-white md:w-80"
+        />
+
+        {/* Export Button */}
         <Button
           variant="outline"
-          className="border-neutral-700 bg-neutral-900 text-white hover:bg-neutral-800"
+          className="border-neutral-700 bg-neutral-900 text-white hover:bg-neutral-800 w-full md:w-auto"
         >
           <Download size={16} className="mr-2" />
           Export
         </Button>
       </div>
 
-      {/* Search */}
-      <div className="mb-6">
-        <Input
-          placeholder="Search by user, type, or date..."
-          className="bg-neutral-900 border-neutral-800 text-white"
-        />
-      </div>
-
-      {/* Table */}
+      {/* Table Wrapper (scrollable on mobile) */}
       <div className="rounded-xl border border-neutral-800 overflow-hidden bg-neutral-900">
-        <Table>
-          <TableHeader>
-            <TableRow className="hover:bg-transparent">
-              <TableHead className="text-neutral-400">Record ID</TableHead>
-              <TableHead className="text-neutral-400">User</TableHead>
-              <TableHead className="text-neutral-400">Gold Amount</TableHead>
-              <TableHead className="text-neutral-400">Type</TableHead>
-              <TableHead className="text-neutral-400">Date</TableHead>
-              <TableHead className="text-neutral-400">Status</TableHead>
-            </TableRow>
-          </TableHeader>
-
-          <TableBody>
-            {vaultData.map((record) => (
-              <TableRow
-                key={record.id}
-                className="border-neutral-800 hover:bg-neutral-800/40"
-              >
-                <TableCell>{record.id}</TableCell>
-
-                <TableCell>
-                  <p className="font-semibold">{record.user}</p>
-                </TableCell>
-
-                <TableCell>{record.gold}</TableCell>
-
-                <TableCell>
-                  <span
-                    className={`px-3 py-1 rounded-full text-sm font-medium ${
-                      record.type === "deposit"
-                        ? "bg-green-600/20 text-green-400 border border-green-600/40"
-                        : "bg-red-600/20 text-red-400 border border-red-600/40"
-                    }`}
-                  >
-                    {record.type}
-                  </span>
-                </TableCell>
-
-                <TableCell>{record.date}</TableCell>
-
-                <TableCell>
-                  <span
-                    className={`px-3 py-1 rounded-full text-sm font-medium ${
-                      record.status === "completed"
-                        ? "bg-neutral-800 text-green-400 border border-green-600/40"
-                        : "bg-[#E9B020] text-black"
-                    }`}
-                  >
-                    {record.status}
-                  </span>
-                </TableCell>
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow className="hover:bg-transparent">
+                <TableHead className="text-neutral-400 whitespace-nowrap">
+                  Record ID
+                </TableHead>
+                <TableHead className="text-neutral-400 whitespace-nowrap">
+                  User
+                </TableHead>
+                <TableHead className="text-neutral-400 whitespace-nowrap">
+                  Gold Amount
+                </TableHead>
+                <TableHead className="text-neutral-400 whitespace-nowrap">
+                  Type
+                </TableHead>
+                <TableHead className="text-neutral-400 whitespace-nowrap">
+                  Date
+                </TableHead>
+                <TableHead className="text-neutral-400 whitespace-nowrap">
+                  Status
+                </TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+
+            <TableBody>
+              {vaultData.map((record) => (
+                <TableRow
+                  key={record.id}
+                  className="border-neutral-800 hover:bg-neutral-800/40"
+                >
+                  <TableCell>{record.id}</TableCell>
+
+                  <TableCell>
+                    <p className="font-semibold">{record.user}</p>
+                  </TableCell>
+
+                  <TableCell>{record.gold}</TableCell>
+
+                  <TableCell>
+                    <span
+                      className={`px-3 py-1 rounded-full text-sm font-medium ${
+                        record.type === "deposit"
+                          ? "bg-green-600/20 text-green-400 border border-green-600/40"
+                          : "bg-red-600/20 text-red-400 border border-red-600/40"
+                      }`}
+                    >
+                      {record.type}
+                    </span>
+                  </TableCell>
+
+                  <TableCell>{record.date}</TableCell>
+
+                  <TableCell>
+                    <span
+                      className={`px-3 py-1 rounded-full text-sm font-medium ${
+                        record.status === "completed"
+                          ? "bg-neutral-800 text-green-400 border border-green-600/40"
+                          : "bg-[#E9B020] text-black"
+                      }`}
+                    >
+                      {record.status}
+                    </span>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </div>
 
       {/* Pagination */}
-      <div className="flex justify-between items-center text-neutral-400 mt-6">
-        <p>Page 1 of 4</p>
+      <div className="flex flex-col md:flex-row justify-between md:items-center gap-4 text-neutral-400 mt-6">
+        <p className="text-center md:text-left">Page 1 of 4</p>
 
-        <div className="flex gap-3">
+        <div className="flex justify-center md:justify-end gap-3">
           <Button
             variant="outline"
             className="border-neutral-700 bg-neutral-900 text-white hover:bg-neutral-800"
@@ -179,5 +154,21 @@ export const Vault = () => {
         </div>
       </div>
     </AdminLayout>
+  );
+};
+
+/* -------------------- Summary Card Component -------------------- */
+
+type SummaryCardProps = {
+  title: string;
+  value: string;
+};
+
+const SummaryCard = ({ title, value }: SummaryCardProps) => {
+  return (
+    <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-5 md:p-6">
+      <p className="text-neutral-400 text-sm mb-1">{title}</p>
+      <p className="text-2xl md:text-3xl font-bold text-white">{value}</p>
+    </div>
   );
 };

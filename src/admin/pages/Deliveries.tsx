@@ -67,11 +67,9 @@ export const Deliveries = () => {
   return (
     <AdminLayout>
       <h1 className="text-4xl font-bold mb-3">Deliveries</h1>
-      <p className="text-neutral-400 mb-8">
-        Manage gold deliveries and store pickups
-      </p>
+      <p className="text-neutral-400 mb-8">Manage gold deliveries and store pickups</p>
 
-      {/* Export Button */}
+      {/* Export */}
       <div className="flex justify-end gap-3 mb-6">
         <Button
           variant="outline"
@@ -90,74 +88,74 @@ export const Deliveries = () => {
         />
       </div>
 
-      {/* Table */}
+      {/* TABLE */}
       <div className="rounded-xl border border-neutral-800 overflow-hidden bg-neutral-900">
-        <Table>
-          <TableHeader>
-            <TableRow className="hover:bg-transparent">
-              <TableHead className="text-neutral-400">Delivery ID</TableHead>
-              <TableHead className="text-neutral-400">User</TableHead>
-              <TableHead className="text-neutral-400">Gold</TableHead>
-              <TableHead className="text-neutral-400">Delivery Type</TableHead>
-              <TableHead className="text-neutral-400">Address</TableHead>
-              <TableHead className="text-neutral-400">Date</TableHead>
-              <TableHead className="text-neutral-400">Status</TableHead>
-            </TableRow>
-          </TableHeader>
-
-          <TableBody>
-            {deliveriesData.map((delivery) => (
-              <TableRow
-                key={delivery.id}
-                className="border-neutral-800 hover:bg-neutral-800/40"
-              >
-                <TableCell>{delivery.id}</TableCell>
-
-                <TableCell>
-                  <p className="font-semibold">{delivery.user}</p>
-                </TableCell>
-
-                <TableCell>{delivery.gold}</TableCell>
-
-                <TableCell>
-                  <span
-                    className={`px-3 py-1 rounded-full text-sm font-medium ${
-                      delivery.type === "home-delivery"
-                        ? "bg-[#E9B020] text-black"
-                        : "bg-neutral-700 text-white"
-                    }`}
-                  >
-                    {delivery.type === "home-delivery"
-                      ? "Home Delivery"
-                      : "Store Pickup"}
-                  </span>
-                </TableCell>
-
-                <TableCell className="max-w-xs truncate">
-                  {delivery.address}
-                </TableCell>
-
-                <TableCell>{delivery.date}</TableCell>
-
-                <TableCell>
-                  <span
-                    className={`px-3 py-1 rounded-full text-sm font-medium ${
-                      delivery.status === "delivered"
-                        ? "bg-neutral-800 text-green-400 border border-green-600/40"
-                        : delivery.status === "out-for-delivery"
-                        ? "bg-yellow-600 text-black"
-                        : delivery.status === "pending"
-                        ? "bg-[#E9B020] text-black"
-                        : "bg-red-600 text-white"
-                    }`}
-                  >
-                    {delivery.status.replace(/-/g, " ")}
-                  </span>
-                </TableCell>
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow className="hover:bg-transparent">
+                <TableHead className="text-neutral-400 whitespace-nowrap">Delivery ID</TableHead>
+                <TableHead className="text-neutral-400 whitespace-nowrap">User</TableHead>
+                <TableHead className="text-neutral-400 whitespace-nowrap">Gold</TableHead>
+                <TableHead className="text-neutral-400 whitespace-nowrap">Delivery Type</TableHead>
+                <TableHead className="text-neutral-400 whitespace-nowrap">Address</TableHead>
+                <TableHead className="text-neutral-400 whitespace-nowrap">Date</TableHead>
+                <TableHead className="text-neutral-400 whitespace-nowrap">Status</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+
+            <TableBody>
+              {deliveriesData.map((delivery) => (
+                <TableRow
+                  key={delivery.id}
+                  className="border-neutral-800 hover:bg-neutral-800/40"
+                >
+                  <TableCell>{delivery.id}</TableCell>
+
+                  <TableCell>
+                    <p className="font-semibold">{delivery.user}</p>
+                  </TableCell>
+
+                  <TableCell>{delivery.gold}</TableCell>
+
+                  {/* DELIVERY TYPE FIXED */}
+                  <TableCell>
+                    <span
+                      className={`inline-flex items-center whitespace-nowrap px-3 py-1 rounded-full text-sm font-medium ${
+                        delivery.type === "home-delivery"
+                          ? "bg-[#E9B020] text-black"
+                          : "bg-neutral-700 text-white"
+                      }`}
+                    >
+                      {delivery.type === "home-delivery" ? "Home Delivery" : "Store Pickup"}
+                    </span>
+                  </TableCell>
+
+                  <TableCell className="max-w-xs truncate">{delivery.address}</TableCell>
+
+                  <TableCell>{delivery.date}</TableCell>
+
+                  {/* STATUS FIXED */}
+                  <TableCell>
+                    <span
+                      className={`inline-flex items-center whitespace-nowrap px-3 py-1 rounded-full text-sm font-medium ${
+                        delivery.status === "delivered"
+                          ? "bg-neutral-800 text-green-400 border border-green-600/40"
+                          : delivery.status === "out-for-delivery"
+                          ? "bg-yellow-600 text-black"
+                          : delivery.status === "pending"
+                          ? "bg-[#E9B020] text-black"
+                          : "bg-red-600 text-white"
+                      }`}
+                    >
+                      {delivery.status.replace(/-/g, " ")}
+                    </span>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </div>
 
       {/* Pagination */}

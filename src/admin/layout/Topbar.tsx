@@ -14,11 +14,9 @@ export const Topbar = () => {
   };
 
   return (
-    <header className="h-16 bg-black border-b border-neutral-800 flex items-center justify-between px-6 relative">
-      <input
-        placeholder="Search users, orders, vault... (Press /)"
-        className="w-96 bg-neutral-900 text-sm rounded-md px-3 py-2 outline-none border border-neutral-800 placeholder-neutral-500"
-      />
+    <header className="h-16 bg-black border-b border-neutral-800 md:flex hidden items-center justify-between px-6 relative">
+      {/* EMPTY LEFT SIDE (Search removed) */}
+      <div />
 
       <div className="flex items-center gap-6">
         <div className="relative">
@@ -44,12 +42,13 @@ export const Topbar = () => {
 
           <ChevronDown size={18} className="text-neutral-400" />
 
-          {/* Dropdown Menu */}
+          {/* Dropdown */}
           {open && (
             <div className="absolute right-0 top-12 w-40 bg-neutral-900 border border-neutral-800 rounded-md shadow-lg py-2 z-50">
               <button
                 className="w-full text-left px-4 py-2 text-sm text-neutral-300 hover:bg-neutral-800"
                 onClick={handleLogout}
+                type="button"
               >
                 Logout
               </button>
